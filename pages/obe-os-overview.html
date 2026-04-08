@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>obe-os — overview</title>
+  <style>
+    :root {
+      --bg: #09090b;
+      --bg2: #0f1117;
+      --panel: rgba(15,17,23,.82);
+      --panel2: rgba(18,21,29,.92);
+      --line: rgba(255,255,255,.08);
+      --line2: rgba(255,255,255,.14);
+      --text: #fafafa;
+      --muted: #b8becf;
+      --soft: #8b92a7;
+      --purple: #8b5cf6;
+      --cyan: #06b6d4;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --shadow: 0 28px 80px rgba(0,0,0,.35);
+      --radius: 28px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(139,92,246,.18), transparent 25%),
+        radial-gradient(circle at 100% 10%, rgba(6,182,212,.13), transparent 22%),
+        linear-gradient(180deg, #09090b, #0d1118 45%, #09090b 100%);
+    }
+    .shell { width: min(1320px, calc(100% - 28px)); margin: 24px auto 72px; display: grid; grid-template-columns: 290px minmax(0,1fr); gap: 22px; }
+    .sidebar {
+      position: sticky; top: 18px;
+      background: rgba(12,14,19,.88);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 18px;
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      height: fit-content;
+    }
+    .logo { width: 44px; height: 44px; border-radius: 15px; display:grid; place-items:center; font-weight:800; background: linear-gradient(135deg,var(--purple),var(--cyan)); }
+    .brand { display:flex; gap:12px; align-items:center; margin-bottom: 18px; }
+    .brand h1 { margin:0; font-size: 17px; }
+    .brand p { margin: 3px 0 0; font-size: 13px; color: var(--soft); }
+    .nav-title { margin: 18px 0 10px; color: var(--soft); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+    .nav { display:grid; gap:8px; }
+    .nav a { text-decoration:none; color:#e9ecf4; padding:12px 14px; border-radius:14px; font-size:14px; border:1px solid transparent; }
+    .nav a:hover { border-color: var(--line); background: rgba(255,255,255,.04); }
+    .content { display:grid; gap:22px; }
+    .hero, .section, .callout, .split, .timeline {
+      background: linear-gradient(180deg, rgba(18,20,28,.88), rgba(14,16,22,.95));
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+    .hero { padding: 34px; position: relative; overflow:hidden; }
+    .hero::after { content:""; position:absolute; right:-30px; bottom:-50px; width:220px; height:220px; border-radius:999px; background: radial-gradient(circle, rgba(139,92,246,.22), transparent 68%); }
+    .eyebrow { display:inline-flex; padding:8px 12px; border-radius:999px; border:1px solid var(--line); background: rgba(255,255,255,.05); font-size:12px; letter-spacing:.14em; text-transform:uppercase; }
+    .hero h2 { margin: 18px 0 12px; font-size: clamp(40px, 7vw, 84px); line-height:.93; letter-spacing:-.05em; max-width: 960px; }
+    .lead { color: var(--muted); font-size: clamp(17px,2vw,21px); line-height:1.65; max-width: 860px; margin:0; }
+    .hero-grid { display:grid; grid-template-columns: repeat(4,1fr); gap:14px; margin-top: 24px; }
+    .metric { padding: 16px; border-radius: 20px; background: rgba(255,255,255,.035); border:1px solid var(--line); }
+    .metric strong { display:block; margin-bottom:6px; font-size:22px; }
+    .metric span { color: var(--soft); font-size: 13px; }
+    .section { padding: 26px; }
+    .section h3 { margin:0 0 10px; font-size: 28px; letter-spacing:-.03em; }
+    .section > p { margin:0 0 18px; color:var(--muted); line-height:1.7; }
+    .grid-2, .grid-3, .grid-4 { display:grid; gap:16px; }
+    .grid-2 { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .grid-3 { grid-template-columns: repeat(3,minmax(0,1fr)); }
+    .grid-4 { grid-template-columns: repeat(4,minmax(0,1fr)); }
+    .card {
+      padding: 18px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    }
+    .card h4 { margin:0 0 10px; font-size: 18px; }
+    .card p, .card li { color: var(--muted); line-height:1.65; }
+    .card ul { margin:0; padding-left:18px; }
+    .split { display:grid; grid-template-columns: 1fr 1fr; overflow:hidden; }
+    .split > div { padding:26px; }
+    .split > div + div { border-left:1px solid var(--line); }
+    .stack { display:grid; gap:12px; }
+    .layer { padding:16px; border-radius:18px; border:1px solid var(--line); background: rgba(255,255,255,.03); }
+    .layer strong { display:block; margin-bottom:6px; }
+    .pill-row { display:flex; flex-wrap:wrap; gap:10px; margin-top: 12px; }
+    .pill { padding: 9px 12px; border-radius: 999px; background: rgba(255,255,255,.045); border:1px solid var(--line); color:#e5e9f5; font-size: 13px; }
+    .timeline { padding: 26px; }
+    .steps { display:grid; gap: 12px; }
+    .step { display:grid; grid-template-columns: 42px minmax(0,1fr); gap:14px; padding:16px; border-radius:20px; border:1px solid var(--line); background: rgba(255,255,255,.03); }
+    .num { width:42px; height:42px; border-radius:15px; display:grid; place-items:center; font-weight:800; background: linear-gradient(135deg,var(--purple),var(--cyan)); }
+    .step h4 { margin:2px 0 8px; font-size:18px; }
+    .step p { margin:0; color:var(--muted); line-height:1.6; }
+    .tabs { display:grid; gap: 16px; }
+    .tab-buttons { display:inline-flex; flex-wrap: wrap; gap:8px; padding:6px; border-radius:16px; background: rgba(255,255,255,.04); border:1px solid var(--line); width:fit-content; }
+    .tab-buttons button { border:0; background:transparent; color:#eceef7; padding:10px 14px; border-radius:12px; cursor:pointer; font:inherit; }
+    .tab-buttons button.active { background: rgba(255,255,255,.09); }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+    details { border:1px solid var(--line); border-radius:20px; background: rgba(255,255,255,.03); overflow:hidden; }
+    summary { list-style:none; cursor:pointer; padding:18px 20px; font-weight:700; display:flex; justify-content:space-between; }
+    summary::-webkit-details-marker { display:none; }
+    .details-body { padding:0 20px 20px; color:var(--muted); line-height:1.65; }
+    .callout { padding: 26px; border-color: rgba(34,197,94,.25); background: linear-gradient(180deg, rgba(34,197,94,.10), rgba(14,16,22,.95)); }
+    .callout h3 { margin:0 0 10px; font-size:28px; }
+    .callout p { margin:0; color:#ddfce7; line-height:1.7; }
+    .footer-note { color: var(--soft); font-size: 13px; padding: 0 4px; }
+    @media (max-width: 1100px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .grid-4, .grid-3, .grid-2, .split, .hero-grid { grid-template-columns: 1fr; }
+      .split > div + div { border-left:0; border-top:1px solid var(--line); }
+    }
+    @media (max-width: 720px) {
+      .hero, .section, .timeline, .callout { padding: 20px; }
+      .hero h2 { font-size: 40px; }
+      .hero-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">O</div>
+        <div>
+          <h1>obe-os</h1>
+          <p>Vision, architecture, roadmap, positionnement</p>
+        </div>
+      </div>
+      <div class="nav-title">Navigation</div>
+      <nav class="nav">
+        <a href="#vision">Vision</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#positioning">Positionnement</a>
+        <a href="#system">Système personnel</a>
+        <a href="#state">État actuel</a>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <section class="hero">
+        <span class="eyebrow">obe-os • all-in-one overview</span>
+        <h2>Une couche d’intelligence personnelle et opérationnelle, pas juste un bot.</h2>
+        <p class="lead">
+          <strong>obe-os</strong> est le système personnel de Paul pour structurer mémoire, exécution, copiloting, canaux, skills et micro-services autour d’un seul cerveau : <strong>Obe</strong>.
+          L’enjeu n’est pas d’empiler des outils, mais de créer une couche cohérente pour penser plus clair, agir plus vite, garder le contexte et transformer les discussions en artefacts utiles.
+        </p>
+        <div class="hero-grid">
+          <div class="metric"><strong>1 cerveau</strong><span>Obe comme couche centrale</span></div>
+          <div class="metric"><strong>multi-canaux</strong><span>Telegram, WhatsApp, runtime OpenClaw</span></div>
+          <div class="metric"><strong>modulaire</strong><span>skills + micro-services dédiés</span></div>
+          <div class="metric"><strong>CLI-first</strong><span>simple, testable, maintenable</span></div>
+        </div>
+      </section>
+
+      <section class="section" id="vision">
+        <h3>Vision globale</h3>
+        <p>
+          obe-os n’est pas un simple assistant conversationnel. C’est un système d’exploitation personnel pour Paul : une couche qui capte le contexte, garde la mémoire utile, coordonne des capacités spécialisées, et soutient l’exécution sans créer plus de friction qu’elle n’en enlève.
+        </p>
+        <div class="grid-3">
+          <article class="card">
+            <h4>Mémoire</h4>
+            <p>Garder ce qui compte, sans transformer le système en cimetière de notes. Daily files pour le flux, mémoire long terme pour le durable.</p>
+          </article>
+          <article class="card">
+            <h4>Copilotage</h4>
+            <p>Aider à clarifier, cadrer, comparer, décider, prioriser et maintenir le cap dans le sprint actuel.</p>
+          </article>
+          <article class="card">
+            <h4>Exécution</h4>
+            <p>Passer du “on devrait” à des actions concrètes, testables, documentées et publiables quand c’est pertinent.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="split" id="architecture">
+        <div>
+          <h3>Architecture logique</h3>
+          <p style="color:var(--muted); line-height:1.7; margin:0 0 16px;">Le cœur du système repose sur un seul cerveau mais plusieurs surfaces et briques spécialisées.</p>
+          <div class="stack">
+            <div class="layer"><strong>Obe</strong>Agent principal, mémoire, ton, logique d’aide, orchestration.</div>
+            <div class="layer"><strong>OpenClaw runtime</strong>Canaux, sessions, tools, skills, automation, exécution locale.</div>
+            <div class="layer"><strong>Skills</strong>Modules de savoir-faire réutilisables comme `page-maker`, `github`, `gog`, etc.</div>
+            <div class="layer"><strong>Micro-services</strong>Services séparés quand le runtime principal ne doit pas être surchargé : STT, TTS, futurs services dédiés.</div>
+            <div class="layer"><strong>Repo / pages / docs</strong>Artefacts publiés, documentation vivante, pages HTML, notes structurées.</div>
+          </div>
+        </div>
+        <div>
+          <h3>Briques déjà visibles</h3>
+          <div class="pill-row">
+            <div class="pill">OpenClaw</div>
+            <div class="pill">workspace docs</div>
+            <div class="pill">MEMORY.md</div>
+            <div class="pill">daily memory</div>
+            <div class="pill">obe-stt</div>
+            <div class="pill">obe-tts</div>
+            <div class="pill">gog</div>
+            <div class="pill">obe-pages</div>
+            <div class="pill">page-maker</div>
+          </div>
+          <div style="margin-top:16px" class="card">
+            <h4>Principe central</h4>
+            <p>Un seul cerveau, plusieurs sorties. On sépare les flux, pas l’intelligence. C’est valable pour Telegram, Gmail/Calendar signals, WhatsApp ou services techniques dédiés.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="timeline" id="roadmap">
+        <h3 style="margin:0 0 10px; font-size:28px; letter-spacing:-.03em;">Roadmap logique</h3>
+        <p style="margin:0 0 18px; color:var(--muted); line-height:1.7;">obe-os avance comme un système vivant : d’abord le socle, ensuite les services stables, puis les workflows récurrents et les surfaces de sortie plus propres.</p>
+        <div class="steps">
+          <div class="step"><div class="num">1</div><div><h4>Socle identitaire et mémoire</h4><p>Définir Obe, Paul, les règles de ton, la mémoire utile, la logique de collaboration et le cadre de proactivité.</p></div></div>
+          <div class="step"><div class="num">2</div><div><h4>Stabilisation infra / runtime</h4><p>Comprendre la stack OpenClaw, documenter la machine, fiabiliser les accès, clarifier les limites réelles du runtime.</p></div></div>
+          <div class="step"><div class="num">3</div><div><h4>Capacités spécialisées</h4><p>STT opérationnel, TTS en pause, Google Workspace branché, GitHub et publication HTML en route.</p></div></div>
+          <div class="step"><div class="num">4</div><div><h4>Workflows réutilisables</h4><p>Créer des skills qui capturent les patterns à forte valeur, comme `page-maker` pour passer vite de la conversation à une page.</p></div></div>
+          <div class="step"><div class="num">5</div><div><h4>Sorties produit / signaux</h4><p>Pages, bot signals, synthèses, copiloting quotidien, surfaces plus claires pour lire et agir.</p></div></div>
+        </div>
+      </section>
+
+      <section class="section" id="positioning">
+        <h3>Positionnement produit</h3>
+        <p>obe-os peut être vu comme un système personnel, mais sa logique a déjà une valeur produit plus large : mémoire, copiloting, structuration, automation légère et artefacts lisibles.</p>
+        <div class="tabs" data-tabs>
+          <div class="tab-buttons">
+            <button class="active" data-tab="personal">couche personnelle</button>
+            <button data-tab="product">logique produit</button>
+            <button data-tab="edge">avantage</button>
+          </div>
+          <div class="tab-panel active" data-panel="personal">
+            <div class="grid-2">
+              <article class="card"><h4>Pour Paul</h4><p>Un copilote qui garde le cap, la mémoire, les décisions et le mouvement entre studio, SaaS, infra et quotidien.</p></article>
+              <article class="card"><h4>Promesse</h4><p>Moins de friction mentale, plus de clarté, plus de continuité, plus d’artefacts utiles.</p></article>
+            </div>
+          </div>
+          <div class="tab-panel" data-panel="product">
+            <div class="grid-2">
+              <article class="card"><h4>Produit latent</h4><p>Un OS de copiloting personnel modulaire, branché sur mémoire, canaux, skills et services dédiés.</p></article>
+              <article class="card"><h4>Format fort</h4><p>Un seul cerveau, une mémoire durable, et des sorties adaptées selon les usages.</p></article>
+            </div>
+          </div>
+          <div class="tab-panel" data-panel="edge">
+            <div class="grid-2">
+              <article class="card"><h4>Différence</h4><p>obe-os cherche la cohérence d’un système personnel réel, pas juste un chatbot plus bavard.</p></article>
+              <article class="card"><h4>Moat</h4><p>Contexte durable, historique réel, skillset personnalisé, workflows nés de l’usage, architecture modulaire.</p></article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="system">
+        <h3>obe-os comme système personnel de Paul</h3>
+        <p>
+          Dans sa version actuelle, obe-os agit comme une couche d’intelligence personnelle et opérationnelle au service du sprint de Paul.
+          Il protège surtout : la clarté, le cap, la cohérence, l’exécution, la mémoire utile et le repérage des angles morts.
+        </p>
+        <div class="grid-4">
+          <article class="card"><h4>Studio</h4><p>Support à Obedience Games.</p></article>
+          <article class="card"><h4>SaaS</h4><p>Support à FortTerminal comme vrai produit.</p></article>
+          <article class="card"><h4>Infra</h4><p>Documentation, stabilité, micro-services, compréhension du runtime.</p></article>
+          <article class="card"><h4>Rituels</h4><p>Mémoire, pages, suivi, cadrage, publication d’artefacts.</p></article>
+        </div>
+      </section>
+
+      <section class="section" id="state">
+        <h3>État actuel</h3>
+        <p>obe-os est déjà bien plus qu’une intention. Le socle est là. Plusieurs capacités sont branchées. La suite consiste surtout à durcir les usages qui reviennent vraiment.</p>
+        <details open>
+          <summary>Ce qui est déjà tangible</summary>
+          <div class="details-body">
+            Socle workspace cohérent, mémoire en place, STT entrant validé via service dédié, TTS cadré mais bloqué côté plan API, Google Workspace branché, repo `obe-pages` actif, skill `page-maker` créé et déjà utilisé en réel.
+          </div>
+        </details>
+        <details>
+          <summary>Ce qui reste à durcir</summary>
+          <div class="details-body">
+            Bot signals Gmail/Calendar, usage plus fluide des pages HTML, vrais templates récurrents, autonomie runtime plus fiable, résolution de certains sujets Docker, et transformation des patterns récurrents en skills solides.
+          </div>
+        </details>
+      </section>
+
+      <section class="callout">
+        <h3>Résumé net</h3>
+        <p>
+          <strong>obe-os</strong> est en train de devenir une vraie couche d’intelligence personnelle et opérationnelle : mémoire, copiloting, exécution, skills, micro-services et surfaces de publication cohérentes autour d’un seul cerveau.
+          Sa vraie force n’est pas d’avoir beaucoup d’outils, mais de rendre l’ensemble plus clair, plus stable, plus durable et plus utile dans le réel.
+        </p>
+      </section>
+
+      <div class="footer-note">Page générée pour poser une vue d’ensemble d’obe-os : vision, architecture, roadmap, positionnement et usage personnel.</div>
+    </main>
+  </div>
+
+  <script>
+    document.querySelectorAll('[data-tabs]').forEach(function(root) {
+      const buttons = root.querySelectorAll('[data-tab]');
+      const panels = root.querySelectorAll('[data-panel]');
+      buttons.forEach(function(button) {
+        button.addEventListener('click', function() {
+          const target = button.getAttribute('data-tab');
+          buttons.forEach(btn => btn.classList.toggle('active', btn === button));
+          panels.forEach(panel => panel.classList.toggle('active', panel.getAttribute('data-panel') === target));
+        });
+      });
+    });
+  </script>
+</body>
+</html>
