@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Architecture Copilote Gmail / Calendar</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: rgba(19, 27, 52, 0.72);
+      --panel-strong: rgba(24, 35, 68, 0.95);
+      --text: #eef2ff;
+      --muted: #aab6d3;
+      --line: rgba(255,255,255,0.10);
+      --accent: #7c9cff;
+      --accent-2: #55e6c1;
+      --warn: #ffb86b;
+      --shadow: 0 18px 50px rgba(0,0,0,0.28);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(124,156,255,0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(85,230,193,0.14), transparent 26%),
+        linear-gradient(180deg, #0a0f1d, #0f1630 55%, #0b1020);
+      min-height: 100vh;
+      line-height: 1.55;
+    }
+
+    .wrap {
+      width: min(1120px, calc(100% - 32px));
+      margin: 40px auto 80px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(124,156,255,0.14), rgba(85,230,193,0.08));
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(124,156,255,0.12);
+      border: 1px solid rgba(124,156,255,0.22);
+      color: #d8e2ff;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    h1 {
+      margin: 18px 0 10px;
+      font-size: clamp(32px, 4vw, 56px);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+    }
+
+    .lead {
+      max-width: 800px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .grid {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 22px;
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+    }
+
+    .span-12 { grid-column: span 12; }
+    .span-7 { grid-column: span 7; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+    .span-4 { grid-column: span 4; }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+    }
+
+    p { margin: 0 0 12px; }
+    ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+    li + li { margin-top: 8px; }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .pill {
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #dce6ff;
+      font-size: 14px;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .mini {
+      background: var(--panel-strong);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .good {
+      color: var(--accent-2);
+      font-weight: 700;
+    }
+
+    .warn {
+      color: var(--warn);
+      font-weight: 700;
+    }
+
+    .flow {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .step {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .step .num {
+      flex: 0 0 auto;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--accent), #9ab2ff);
+      color: #061126;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .question {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(124,156,255,0.08);
+      border: 1px solid rgba(124,156,255,0.20);
+    }
+
+    .footer-note {
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .span-7, .span-5, .span-6, .span-4 { grid-column: span 12; }
+      .compare { grid-template-columns: 1fr; }
+      .hero { padding: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Architecture recommandée • Gmail / Calendar copilote</div>
+      <h1>Un canal de signal séparé,<br>mais le même cerveau derrière.</h1>
+      <p class="lead">
+        L’idée n’est pas de créer un deuxième toi. L’idée, c’est de séparer le <strong>flux de notifications</strong>
+        du reste, tout en gardant <strong>Obe comme cerveau central</strong> pour pouvoir parler mail et agenda depuis n’importe où.
+      </p>
+      <div class="pill-row">
+        <div class="pill">1 seul cerveau</div>
+        <div class="pill">plusieurs sorties</div>
+        <div class="pill">bot Telegram dédié aux signaux</div>
+        <div class="pill">accès Gmail/Calendar partout</div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card span-7">
+        <h2>Le design que je recommande</h2>
+        <div class="compare">
+          <div class="mini">
+            <h3>Obe principal</h3>
+            <ul>
+              <li>reste ton copilote central</li>
+              <li>accessible partout</li>
+              <li>peut lire / résumer / préparer / checker Gmail & Calendar à la demande</li>
+            </ul>
+          </div>
+          <div class="mini">
+            <h3>Bot Telegram “signals”</h3>
+            <ul>
+              <li>sert de canal sortant spécialisé</li>
+              <li>push les alertes utiles</li>
+              <li>digests mail / agenda</li>
+              <li>rappels et signaux sans polluer le bot principal</li>
+            </ul>
+          </div>
+        </div>
+        <p class="footer-note">
+          <span class="good">Bonne séparation :</span> on sépare le bruit et le canal. <br>
+          <span class="warn">Mauvaise séparation :</span> on évite de fragmenter la mémoire et l’intelligence en deux cerveaux différents.
+        </p>
+      </article>
+
+      <article class="card span-5">
+        <h2>Pourquoi c’est le bon move</h2>
+        <ul>
+          <li>moins de bruit dans la conversation principale</li>
+          <li>plus de lisibilité sur les signaux Gmail / Calendar</li>
+          <li>pas de duplication de mémoire</li>
+          <li>moins de maintenance qu’un deuxième agent complet</li>
+          <li>tu gardes l’accès mail / agenda depuis n’importe quel canal</li>
+        </ul>
+      </article>
+
+      <article class="card span-12">
+        <h2>Architecture cible</h2>
+        <div class="flow">
+          <div class="step">
+            <div class="num">1</div>
+            <div>
+              <h3>Obe reste l’intelligence centrale</h3>
+              <p>Un seul cerveau, une seule mémoire logique, une seule couche de décision.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="num">2</div>
+            <div>
+              <h3>Un 2e bot Telegram pour les signaux</h3>
+              <p>Ce bot sert uniquement de sortie spécialisée pour Gmail / Calendar.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="num">3</div>
+            <div>
+              <h3>Depuis partout, tu peux toujours demander</h3>
+              <p>“check mes mails”, “résume mes rendez-vous”, “prépare une réponse”, “qu’est-ce qui est urgent ?”</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="num">4</div>
+            <div>
+              <h3>Le bot signals pousse seulement ce qui mérite de te couper</h3>
+              <p>Urgent, important, ou utile dans un digest propre.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card span-6">
+        <h2>Le point clé</h2>
+        <p>
+          Le vrai besoin n’est probablement <strong>pas</strong> de créer un deuxième agent séparé.
+          Le vrai besoin, c’est de créer un <strong>canal de notification séparé</strong>.
+        </p>
+        <p>
+          Donc la bonne formule est :<br>
+          <strong>séparation du flux</strong>, pas <strong>séparation de l’intelligence</strong>.
+        </p>
+      </article>
+
+      <article class="card span-6">
+        <h2>Modes possibles pour les signaux</h2>
+        <ul>
+          <li><strong>alertes immédiates</strong> pour l’urgent</li>
+          <li><strong>digests périodiques</strong> pour le reste</li>
+          <li><strong>mix des deux</strong> = probablement le meilleur design</li>
+        </ul>
+      </article>
+
+      <article class="card span-12">
+        <h2>Les 4 questions à trancher</h2>
+        <div class="question"><strong>1.</strong> Tu veux un vrai 2e bot Telegram séparé ? <em>oui / non</em></div>
+        <div class="question"><strong>2.</strong> Tu veux commencer par <em>mail</em>, <em>calendar</em>, ou <em>les deux dès le départ</em> ?</div>
+        <div class="question"><strong>3.</strong> Tu préfères <em>alertes immédiates</em>, <em>digests</em>, ou <em>mix des deux</em> ?</div>
+        <div class="question"><strong>4.</strong> Tu veux un ton <em>très sobre système</em> ou <em>Obe compact</em> ?</div>
+      </article>
+
+      <article class="card span-12">
+        <h2>Ma reco nette</h2>
+        <ul>
+          <li><strong>Oui</strong> à un vrai 2e bot Telegram séparé</li>
+          <li><strong>Oui</strong> à un seul cerveau Obe derrière</li>
+          <li><strong>Oui</strong> à un bot “signals” dédié à Gmail / Calendar</li>
+          <li><strong>Oui</strong> à un mode <strong>mix</strong> : urgent en push, le reste en digest</li>
+          <li><strong>Oui</strong> à un ton <strong>sobre + compact</strong></li>
+        </ul>
+      </article>
+    </section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Obe Pages</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: rgba(19, 27, 52, 0.72);
+      --text: #eef2ff;
+      --muted: #aab6d3;
+      --line: rgba(255,255,255,0.10);
+      --accent: #7c9cff;
+      --accent-2: #55e6c1;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: Inter, system-ui, sans-serif; color: var(--text);
+      background: linear-gradient(180deg, #0a0f1d, #0f1630 55%, #0b1020);
+      min-height: 100vh;
+    }
+    .wrap { width: min(980px, calc(100% - 32px)); margin: 40px auto; }
+    .hero, .card { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 28px; }
+    h1 { font-size: clamp(32px, 4vw, 52px); margin: 0 0 10px; }
+    p { color: var(--muted); }
+    .grid { display: grid; gap: 18px; margin-top: 22px; }
+    a.card { display:block; text-decoration:none; color:inherit; }
+    .label { display:inline-block; padding:8px 12px; border-radius:999px; background: rgba(124,156,255,0.12); color:#dce6ff; font-size:13px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <span class="label">Obe Pages</span>
+      <h1>Pages visuelles d’Obe</h1>
+      <p>Un petit repo GitHub Pages pour consulter facilement sur mobile des exports HTML, cartes de réflexion et mini dashboards.</p>
+    </section>
+    <section class="grid">
+      <a class="card" href="./pages/gmail-calendar-copilot-architecture.html">
+        <h2>Architecture copilote Gmail / Calendar</h2>
+        <p>Le design recommandé : un canal de signaux séparé, mais le même cerveau Obe derrière.</p>
+      </a>
+    </section>
+  </div>
+</body>
+</html>
