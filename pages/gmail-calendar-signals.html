@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gmail / Calendar Signals — Obe</title>
+  <style>
+    :root {
+      --bg: #09090b;
+      --bg2: #0f1117;
+      --panel: rgba(15,17,23,.84);
+      --line: rgba(255,255,255,.08);
+      --text: #fafafa;
+      --muted: #b8bed0;
+      --soft: #8b92a7;
+      --purple: #8b5cf6;
+      --cyan: #06b6d4;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --shadow: 0 28px 80px rgba(0,0,0,.36);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(139,92,246,.18), transparent 24%),
+        radial-gradient(circle at 100% 0%, rgba(6,182,212,.12), transparent 22%),
+        linear-gradient(180deg, #09090b, #0d1118 48%, #09090b);
+    }
+    .shell { width: min(1320px, calc(100% - 28px)); margin: 24px auto 72px; display: grid; grid-template-columns: 290px minmax(0,1fr); gap: 22px; }
+    .sidebar, .hero, .section, .callout, .split {
+      background: linear-gradient(180deg, rgba(18,20,28,.88), rgba(14,16,22,.95));
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+    .sidebar { position: sticky; top: 18px; padding: 18px; height: fit-content; }
+    .brand { display:flex; gap:12px; align-items:center; margin-bottom:18px; }
+    .logo { width:44px; height:44px; border-radius:15px; display:grid; place-items:center; font-weight:800; background: linear-gradient(135deg,var(--purple),var(--cyan)); }
+    .brand h1 { margin:0; font-size:17px; }
+    .brand p { margin:3px 0 0; color:var(--soft); font-size:13px; }
+    .nav-title { margin:18px 0 10px; color:var(--soft); font-size:12px; letter-spacing:.14em; text-transform:uppercase; }
+    .nav { display:grid; gap:8px; }
+    .nav a { text-decoration:none; color:#eef0f8; padding:12px 14px; border-radius:14px; border:1px solid transparent; font-size:14px; }
+    .nav a:hover { border-color:var(--line); background: rgba(255,255,255,.04); }
+    .content { display:grid; gap:22px; }
+    .hero { padding:34px; position:relative; overflow:hidden; }
+    .hero::after { content:""; position:absolute; right:-40px; bottom:-60px; width:230px; height:230px; border-radius:999px; background: radial-gradient(circle, rgba(6,182,212,.20), transparent 68%); }
+    .eyebrow { display:inline-flex; padding:8px 12px; border-radius:999px; border:1px solid var(--line); background: rgba(255,255,255,.05); font-size:12px; letter-spacing:.14em; text-transform:uppercase; }
+    .hero h2 { margin:18px 0 12px; font-size: clamp(40px, 7vw, 82px); line-height:.93; letter-spacing:-.05em; max-width: 960px; }
+    .lead { margin:0; color:var(--muted); font-size: clamp(17px,2vw,21px); line-height:1.65; max-width: 860px; }
+    .hero-grid, .grid-2, .grid-3, .grid-4 { display:grid; gap:16px; }
+    .hero-grid { grid-template-columns: repeat(4,1fr); margin-top:24px; }
+    .grid-2 { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .grid-3 { grid-template-columns: repeat(3,minmax(0,1fr)); }
+    .grid-4 { grid-template-columns: repeat(4,minmax(0,1fr)); }
+    .metric, .card, .signal, .rule, .mini {
+      padding:18px;
+      border-radius:22px;
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    }
+    .metric strong { display:block; margin-bottom:6px; font-size:22px; }
+    .metric span { color:var(--soft); font-size:13px; }
+    .section { padding:26px; }
+    .section h3 { margin:0 0 10px; font-size:28px; letter-spacing:-.03em; }
+    .section > p { margin:0 0 18px; color:var(--muted); line-height:1.7; }
+    .card h4, .signal h4, .rule h4, .mini h4 { margin:0 0 10px; font-size:18px; }
+    .card p, .signal p, .rule p, .mini p, .card li, .signal li, .rule li { color:var(--muted); line-height:1.65; }
+    .card ul, .signal ul, .rule ul { margin:0; padding-left:18px; }
+    .split { display:grid; grid-template-columns: 1fr 1fr; overflow:hidden; }
+    .split > div { padding:26px; }
+    .split > div + div { border-left:1px solid var(--line); }
+    .stack { display:grid; gap:12px; }
+    .layer { padding:16px; border-radius:18px; border:1px solid var(--line); background: rgba(255,255,255,.03); }
+    .layer strong { display:block; margin-bottom:6px; }
+    .steps { display:grid; gap:12px; }
+    .step { display:grid; grid-template-columns: 42px minmax(0,1fr); gap:14px; padding:16px; border-radius:20px; border:1px solid var(--line); background: rgba(255,255,255,.03); }
+    .num { width:42px; height:42px; border-radius:15px; display:grid; place-items:center; font-weight:800; background: linear-gradient(135deg,var(--purple),var(--cyan)); }
+    .step h4 { margin:2px 0 8px; font-size:18px; }
+    .step p { margin:0; color:var(--muted); line-height:1.6; }
+    .tabs { display:grid; gap:16px; }
+    .tab-buttons { display:inline-flex; flex-wrap:wrap; gap:8px; padding:6px; border-radius:16px; background: rgba(255,255,255,.04); border:1px solid var(--line); width:fit-content; }
+    .tab-buttons button { border:0; background:transparent; color:#eceef7; padding:10px 14px; border-radius:12px; cursor:pointer; font:inherit; }
+    .tab-buttons button.active { background: rgba(255,255,255,.09); }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+    details { border:1px solid var(--line); border-radius:20px; background: rgba(255,255,255,.03); overflow:hidden; }
+    summary { list-style:none; cursor:pointer; padding:18px 20px; font-weight:700; display:flex; justify-content:space-between; }
+    summary::-webkit-details-marker { display:none; }
+    .details-body { padding:0 20px 20px; color:var(--muted); line-height:1.65; }
+    .callout { padding:26px; border-color: rgba(34,197,94,.24); background: linear-gradient(180deg, rgba(34,197,94,.10), rgba(14,16,22,.95)); }
+    .callout h3 { margin:0 0 10px; font-size:28px; }
+    .callout p { margin:0; color:#dcfce7; line-height:1.7; }
+    .footer-note { color:var(--soft); font-size:13px; padding:0 4px; }
+    @media (max-width: 1100px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .hero-grid, .grid-2, .grid-3, .grid-4, .split { grid-template-columns: 1fr; }
+      .split > div + div { border-left:0; border-top:1px solid var(--line); }
+    }
+    @media (max-width: 720px) {
+      .hero, .section, .callout { padding:20px; }
+      .hero h2 { font-size:40px; }
+      .hero-grid { grid-template-columns: repeat(2,1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">G</div>
+        <div>
+          <h1>Gmail / Calendar Signals</h1>
+          <p>Même cerveau, canal de signaux séparé</p>
+        </div>
+      </div>
+      <div class="nav-title">Navigation</div>
+      <nav class="nav">
+        <a href="#role">Rôle</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#signals">Types de signaux</a>
+        <a href="#noise">Règles de bruit</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#guards">Garde-fous</a>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <section class="hero">
+        <span class="eyebrow">Signals layer • Gmail + Calendar</span>
+        <h2>Un flux de signaux utile, compact et non-invasif pour Obe.</h2>
+        <p class="lead">
+          L’idée n’est pas de créer un deuxième cerveau. Le cerveau reste <strong>Obe</strong>. Ce qu’on sépare, c’est le <strong>canal de notification</strong>.
+          Gmail et Calendar deviennent des sources de signaux qui alimentent un bot Telegram dédié, sobre, utile et calibré pour éviter le bruit.
+        </p>
+        <div class="hero-grid">
+          <div class="metric"><strong>1 cerveau</strong><span>Obe reste central</span></div>
+          <div class="metric"><strong>1 canal dédié</strong><span>bot Telegram signals</span></div>
+          <div class="metric"><strong>2 sources</strong><span>Gmail + Calendar</span></div>
+          <div class="metric"><strong>0 spam</strong><span>notification seulement si utile</span></div>
+        </div>
+      </section>
+
+      <section class="section" id="role">
+        <h3>Rôle du système</h3>
+        <p>
+          Le système Gmail / Calendar Signals sert à faire remonter les informations importantes sans forcer Paul à surveiller lui-même ses flux en continu.
+          Il doit fonctionner comme une couche de veille et de rappel, pas comme une avalanche de notifications.
+        </p>
+        <div class="grid-3">
+          <article class="card"><h4>Veille email</h4><p>Repérer les messages urgents, intéressants, inhabituels ou porteurs d’action.</p></article>
+          <article class="card"><h4>Veille agenda</h4><p>Anticiper les événements proches, les collisions, les trous, les rappels utiles.</p></article>
+          <article class="card"><h4>Rendu signal</h4><p>Envoyer un message compact, lisible, orienté décision ou attention réelle.</p></article>
+        </div>
+      </section>
+
+      <section class="split" id="architecture">
+        <div>
+          <h3>Architecture cible</h3>
+          <div class="stack">
+            <div class="layer"><strong>Obe</strong>Cerveau unique, logique de priorisation, mémoire, ton, arbitrage.</div>
+            <div class="layer"><strong>Google Workspace</strong>Sources Gmail / Calendar via `gog` et intégrations dédiées.</div>
+            <div class="layer"><strong>Signals pipeline</strong>Analyse, scoring, filtrage, génération de message.</div>
+            <div class="layer"><strong>Bot Telegram dédié</strong>Canal séparé pour les signaux afin d’éviter de polluer le chat principal.</div>
+          </div>
+        </div>
+        <div>
+          <h3>Principe clé</h3>
+          <div class="card">
+            <h4>On sépare le flux, pas l’intelligence</h4>
+            <p>
+              Il ne faut pas deux Obe. Il faut un seul Obe, avec plusieurs surfaces. Le bot signals est juste une sortie spécialisée pour les alertes, digests et heads-up utiles.
+            </p>
+          </div>
+          <div class="card" style="margin-top:16px;">
+            <h4>Pourquoi Telegram séparé</h4>
+            <p>
+              Parce que le rôle du canal n’est pas le même : le chat principal sert à travailler, le canal signals sert à recevoir des signaux calibrés sans mélanger les usages.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="signals">
+        <h3>Types de signaux</h3>
+        <p>Les signaux doivent être classés par valeur et par niveau d’interruption.</p>
+        <div class="tabs" data-tabs>
+          <div class="tab-buttons">
+            <button class="active" data-tab="urgent">urgent</button>
+            <button data-tab="digest">digest</button>
+            <button data-tab="calendar">calendar</button>
+            <button data-tab="anomalies">anomalies</button>
+          </div>
+          <div class="tab-panel active" data-panel="urgent">
+            <div class="grid-2">
+              <article class="signal"><h4>Urgent email</h4><ul><li>message important nécessitant action rapide</li><li>réponse attendue</li><li>sujet pro à fort impact</li></ul></article>
+              <article class="signal"><h4>Format attendu</h4><p>Message court, pourquoi c’est urgent, action probable, lien ou résumé utile.</p></article>
+            </div>
+          </div>
+          <div class="tab-panel" data-panel="digest">
+            <div class="grid-2">
+              <article class="signal"><h4>Digest</h4><ul><li>lot de mails intéressants</li><li>résumé matin / soir</li><li>items à traiter plus tard</li></ul></article>
+              <article class="signal"><h4>Format attendu</h4><p>Compact, trié, peu de bruit, lisible en 20 secondes.</p></article>
+            </div>
+          </div>
+          <div class="tab-panel" data-panel="calendar">
+            <div class="grid-2">
+              <article class="signal"><h4>Événements à venir</h4><ul><li>rendez-vous proche</li><li>préparation nécessaire</li><li>détection de collisions</li></ul></article>
+              <article class="signal"><h4>Format attendu</h4><p>Heure, contexte, temps restant, éventuel besoin de préparation ou de déplacement.</p></article>
+            </div>
+          </div>
+          <div class="tab-panel" data-panel="anomalies">
+            <div class="grid-2">
+              <article class="signal"><h4>Attention points</h4><ul><li>absence de réponse inhabituelle</li><li>journée vide ou surchargée</li><li>changement inattendu</li></ul></article>
+              <article class="signal"><h4>Format attendu</h4><p>Signal sobre, formulé comme point d’attention, pas comme fausse urgence.</p></article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="noise">
+        <h3>Règles de bruit</h3>
+        <p>La valeur du système dépend plus du filtrage que de la quantité d’informations remontées.</p>
+        <div class="grid-4">
+          <article class="rule"><h4>Notifier</h4><p>Seulement si l’info change vraiment la priorisation, l’attention ou l’action.</p></article>
+          <article class="rule"><h4>Digester</h4><p>Quand plusieurs éléments sont utiles mais pas assez urgents pour interrompre.</p></article>
+          <article class="rule"><h4>Se taire</h4><p>Quand il n’y a rien de nouveau, rien d’important ou trop peu de signal.</p></article>
+          <article class="rule"><h4>Escalader</h4><p>Uniquement si urgence réelle, conflit d’agenda ou mail critique.</p></article>
+        </div>
+      </section>
+
+      <section class="section" id="roadmap">
+        <h3>Roadmap d’implémentation</h3>
+        <p>Le plus important est de commencer simple, avec peu de bruit et un comportement fiable.</p>
+        <div class="steps">
+          <div class="step"><div class="num">1</div><div><h4>Définir les règles de signal</h4><p>Qu’est-ce qui mérite une alerte immédiate, un digest, ou aucun message.</p></div></div>
+          <div class="step"><div class="num">2</div><div><h4>Créer le bot Telegram dédié</h4><p>Canal séparé pour les signaux, distinct du chat principal avec Obe.</p></div></div>
+          <div class="step"><div class="num">3</div><div><h4>Brancher Gmail / Calendar</h4><p>Lecture via `gog` et pipeline de structuration minimal.</p></div></div>
+          <div class="step"><div class="num">4</div><div><h4>Lancer une V1 low-noise</h4><p>Peu de catégories, peu de volume, surveillance du ressenti réel.</p></div></div>
+          <div class="step"><div class="num">5</div><div><h4>Affiner</h4><p>Ajouter digests, anomalies, meilleure granularité, et règles plus fines seulement après usage réel.</p></div></div>
+        </div>
+      </section>
+
+      <section class="section" id="guards">
+        <h3>Garde-fous</h3>
+        <p>Le système ne doit jamais devenir une source de distraction de plus.</p>
+        <details open>
+          <summary>Ce qu’on veut absolument</summary>
+          <div class="details-body">Même cerveau Obe, canal séparé, ton compact, signal > bruit, architecture modulaire, possibilité d’évoluer sans casser le reste.</div>
+        </details>
+        <details>
+          <summary>Ce qu’on veut éviter</summary>
+          <div class="details-body">Deux bots qui pensent différemment, des notifications partout, une logique trop bavarde, un mélange avec le chat principal, ou des alertes non calibrées.</div>
+        </details>
+        <details>
+          <summary>Principe final</summary>
+          <div class="details-body">Le système doit faire gagner de l’attention, pas en consommer davantage. S’il dérive vers le bruit, il faudra le simplifier immédiatement.</div>
+        </details>
+      </section>
+
+      <section class="callout">
+        <h3>Résumé net</h3>
+        <p>
+          Gmail / Calendar Signals doit être une <strong>surface spécialisée de signal</strong> branchée sur le même Obe, avec un bot Telegram dédié, des règles strictes de bruit, et une V1 volontairement simple. La force du système ne viendra pas du nombre d’alertes, mais de la qualité du tri.
+        </p>
+      </section>
+
+      <div class="footer-note">Page générée pour cadrer le futur système Gmail / Calendar Signals autour d’un seul cerveau Obe et d’un canal Telegram séparé.</div>
+    </main>
+  </div>
+
+  <script>
+    document.querySelectorAll('[data-tabs]').forEach(function(root) {
+      const buttons = root.querySelectorAll('[data-tab]');
+      const panels = root.querySelectorAll('[data-panel]');
+      buttons.forEach(function(button) {
+        button.addEventListener('click', function() {
+          const target = button.getAttribute('data-tab');
+          buttons.forEach(btn => btn.classList.toggle('active', btn === button));
+          panels.forEach(panel => panel.classList.toggle('active', panel.getAttribute('data-panel') === target));
+        });
+      });
+    });
+  </script>
+</body>
+</html>
