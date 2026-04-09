@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JJS sur Roblox — Présentation</title>
+  <style>
+    :root {
+      --bg: #09090b;
+      --panel: rgba(15,17,23,.84);
+      --line: rgba(255,255,255,.08);
+      --text: #fafafa;
+      --muted: #b8bed0;
+      --soft: #8b92a7;
+      --purple: #8b5cf6;
+      --cyan: #06b6d4;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --shadow: 0 28px 80px rgba(0,0,0,.36);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(139,92,246,.18), transparent 24%),
+        radial-gradient(circle at 100% 0%, rgba(6,182,212,.12), transparent 22%),
+        linear-gradient(180deg, #09090b, #0d1118 48%, #09090b);
+    }
+    .shell { width: min(1320px, calc(100% - 28px)); margin: 24px auto 72px; display: grid; grid-template-columns: 290px minmax(0,1fr); gap: 22px; }
+    .sidebar, .hero, .section, .callout, .split {
+      background: linear-gradient(180deg, rgba(18,20,28,.88), rgba(14,16,22,.95));
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+    .sidebar { position: sticky; top: 18px; padding: 18px; height: fit-content; }
+    .brand { display:flex; gap:12px; align-items:center; margin-bottom:18px; }
+    .logo { width:44px; height:44px; border-radius:15px; display:grid; place-items:center; font-weight:800; background: linear-gradient(135deg,var(--purple),var(--cyan)); }
+    .brand h1 { margin:0; font-size:17px; }
+    .brand p { margin:3px 0 0; color:var(--soft); font-size:13px; }
+    .nav-title { margin:18px 0 10px; color:var(--soft); font-size:12px; letter-spacing:.14em; text-transform:uppercase; }
+    .nav { display:grid; gap:8px; }
+    .nav a { text-decoration:none; color:#eef0f8; padding:12px 14px; border-radius:14px; border:1px solid transparent; font-size:14px; }
+    .nav a:hover { border-color:var(--line); background: rgba(255,255,255,.04); }
+    .content { display:grid; gap:22px; }
+    .hero { padding:34px; position:relative; overflow:hidden; }
+    .hero::after { content:""; position:absolute; right:-40px; bottom:-60px; width:230px; height:230px; border-radius:999px; background: radial-gradient(circle, rgba(139,92,246,.20), transparent 68%); }
+    .eyebrow { display:inline-flex; padding:8px 12px; border-radius:999px; border:1px solid var(--line); background: rgba(255,255,255,.05); font-size:12px; letter-spacing:.14em; text-transform:uppercase; }
+    .hero h2 { margin:18px 0 12px; font-size: clamp(40px, 7vw, 82px); line-height:.93; letter-spacing:-.05em; max-width: 960px; }
+    .lead { margin:0; color:var(--muted); font-size: clamp(17px,2vw,21px); line-height:1.65; max-width: 860px; }
+    .hero-grid, .grid-2, .grid-3, .grid-4 { display:grid; gap:16px; }
+    .hero-grid { grid-template-columns: repeat(4,1fr); margin-top:24px; }
+    .grid-2 { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .grid-3 { grid-template-columns: repeat(3,minmax(0,1fr)); }
+    .grid-4 { grid-template-columns: repeat(4,minmax(0,1fr)); }
+    .metric, .card, .mini {
+      padding:18px;
+      border-radius:22px;
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    }
+    .metric strong { display:block; margin-bottom:6px; font-size:22px; }
+    .metric span { color:var(--soft); font-size:13px; }
+    .section { padding:26px; }
+    .section h3 { margin:0 0 10px; font-size:28px; letter-spacing:-.03em; }
+    .section > p { margin:0 0 18px; color:var(--muted); line-height:1.7; }
+    .card h4, .mini h4 { margin:0 0 10px; font-size:18px; }
+    .card p, .mini p, .card li, .mini li { color:var(--muted); line-height:1.65; }
+    .card ul, .mini ul { margin:0; padding-left:18px; }
+    .split { display:grid; grid-template-columns: 1fr 1fr; overflow:hidden; }
+    .split > div { padding:26px; }
+    .split > div + div { border-left:1px solid var(--line); }
+    .steps { display:grid; gap:12px; }
+    .step { display:grid; grid-template-columns: 42px minmax(0,1fr); gap:14px; padding:16px; border-radius:20px; border:1px solid var(--line); background: rgba(255,255,255,.03); }
+    .num { width:42px; height:42px; border-radius:15px; display:grid; place-items:center; font-weight:800; background: linear-gradient(135deg,var(--purple),var(--cyan)); }
+    .step h4 { margin:2px 0 8px; font-size:18px; }
+    .step p { margin:0; color:var(--muted); line-height:1.6; }
+    .tabs { display:grid; gap:16px; }
+    .tab-buttons { display:inline-flex; flex-wrap:wrap; gap:8px; padding:6px; border-radius:16px; background: rgba(255,255,255,.04); border:1px solid var(--line); width:fit-content; }
+    .tab-buttons button { border:0; background:transparent; color:#eceef7; padding:10px 14px; border-radius:12px; cursor:pointer; font:inherit; }
+    .tab-buttons button.active { background: rgba(255,255,255,.09); }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+    details { border:1px solid var(--line); border-radius:20px; background: rgba(255,255,255,.03); overflow:hidden; }
+    summary { list-style:none; cursor:pointer; padding:18px 20px; font-weight:700; display:flex; justify-content:space-between; }
+    summary::-webkit-details-marker { display:none; }
+    .details-body { padding:0 20px 20px; color:var(--muted); line-height:1.65; }
+    .callout { padding:26px; border-color: rgba(34,197,94,.24); background: linear-gradient(180deg, rgba(34,197,94,.10), rgba(14,16,22,.95)); }
+    .callout h3 { margin:0 0 10px; font-size:28px; }
+    .callout p { margin:0; color:#dcfce7; line-height:1.7; }
+    .footer-note { color:var(--soft); font-size:13px; padding:0 4px; }
+    @media (max-width: 1100px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .hero-grid, .grid-2, .grid-3, .grid-4, .split { grid-template-columns: 1fr; }
+      .split > div + div { border-left:0; border-top:1px solid var(--line); }
+    }
+    @media (max-width: 720px) {
+      .hero, .section, .callout { padding:20px; }
+      .hero h2 { font-size:40px; }
+      .hero-grid { grid-template-columns: repeat(2,1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">J</div>
+        <div>
+          <h1>JJS sur Roblox</h1>
+          <p>Présentation rapide pour débuter</p>
+        </div>
+      </div>
+      <div class="nav-title">Navigation</div>
+      <nav class="nav">
+        <a href="#what">C’est quoi ?</a>
+        <a href="#how">Comment ça joue</a>
+        <a href="#techniques">Techniques</a>
+        <a href="#tips">Conseils débutant</a>
+        <a href="#fun">Pourquoi c’est fun</a>
+        <a href="#limits">À savoir</a>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <section class="hero">
+        <span class="eyebrow">Roblox • JJS • Jujutsu Kaisen vibe</span>
+        <h2>JJS, c’est du PvP anime nerveux, stylé et très orienté baston / techniques.</h2>
+        <p class="lead">
+          Si ton pote joue à <strong>JJS</strong> sur Roblox, l’idée simple à retenir c’est :
+          un jeu de combat inspiré de l’univers <strong>Jujutsu Kaisen</strong>, avec des personnages, des techniques, des combos,
+          des déplacements rapides et un côté très “skill expression”.
+        </p>
+        <div class="hero-grid">
+          <div class="metric"><strong>Anime PvP</strong><span>inspiration JJK très claire</span></div>
+          <div class="metric"><strong>Combat rapide</strong><span>mouvements, combos, pression</span></div>
+          <div class="metric"><strong>Techniques</strong><span>moves, timings, techs, style</span></div>
+          <div class="metric"><strong>Fun à regarder</strong><span>chaotique, spectaculaire, nerveux</span></div>
+        </div>
+      </section>
+
+      <section class="section" id="what">
+        <h3>C’est quoi exactement ?</h3>
+        <p>
+          JJS est surtout connu comme un jeu Roblox de combat PvP inspiré de <strong>Jujutsu Kaisen</strong>.
+          Tu choisis un perso / moveset inspiré de l’univers, puis tu affrontes d’autres joueurs avec des attaques,
+          enchaînements, dashs, contres et techniques spéciales.
+        </p>
+        <div class="grid-3">
+          <article class="card"><h4>Base du jeu</h4><p>Arène PvP, affrontements rapides, beaucoup de lecture de mouvement et de timing.</p></article>
+          <article class="card"><h4>Feeling</h4><p>Très dynamique, parfois un peu chaotique, mais c’est aussi ce qui fait le charme du jeu.</p></article>
+          <article class="card"><h4>Esprit</h4><p>Plus “battleground stylé” que simulation pure. L’objectif, c’est de dominer les fights avec ton perso et tes techs.</p></article>
+        </div>
+      </section>
+
+      <section class="split" id="how">
+        <div>
+          <h3>Comment ça se joue</h3>
+          <div class="steps">
+            <div class="step"><div class="num">1</div><div><h4>Choisir un perso / style</h4><p>Chaque personnage a ses attaques, son rythme et sa manière d’imposer la pression.</p></div></div>
+            <div class="step"><div class="num">2</div><div><h4>Apprendre les moves de base</h4><p>M1, déplacements, dashs, capacités, timings, ouvertures et confirms.</p></div></div>
+            <div class="step"><div class="num">3</div><div><h4>Construire des enchaînements</h4><p>Le vrai niveau vient souvent de la capacité à relier tes coups de manière propre.</p></div></div>
+            <div class="step"><div class="num">4</div><div><h4>Lire l’adversaire</h4><p>Esquive, punition, spacing, anticipation : tu gagnes souvent là-dessus.</p></div></div>
+          </div>
+        </div>
+        <div>
+          <h3>Ce qui fait la différence</h3>
+          <div class="card"><h4>Pas juste spammer</h4><p>Tu peux lancer des moves au hasard, mais les bons joueurs lisent mieux le rythme du combat et exploitent les erreurs.</p></div>
+          <div class="card" style="margin-top:16px;"><h4>Le style compte</h4><p>Dans JJS, il y a aussi une culture du “beau move”, du combo propre, de la tech bien sentie. Ce n’est pas juste gagner, c’est parfois gagner avec style.</p></div>
+        </div>
+      </section>
+
+      <section class="section" id="techniques">
+        <h3>Les techniques, c’est quoi dans JJS ?</h3>
+        <p>
+          Quand on parle de “techniques” dans ce genre de jeu, on parle à la fois des <strong>capacités du personnage</strong>
+          et des <strong>techs</strong> au sens gameplay : des usages malins de moves, hitboxes, mouvement, physique ou environnement.
+        </p>
+        <div class="tabs" data-tabs>
+          <div class="tab-buttons">
+            <button class="active" data-tab="moves">moves</button>
+            <button data-tab="techs">techs</button>
+            <button data-tab="mindgame">mindgame</button>
+          </div>
+          <div class="tab-panel active" data-panel="moves">
+            <div class="grid-2">
+              <article class="mini"><h4>Moves du perso</h4><p>Les attaques et capacités visibles : coups spéciaux, capacités signature, options offensives et défensives.</p></article>
+              <article class="mini"><h4>Objectif</h4><p>Comprendre quelles attaques ouvrent, prolongent un combo, punissent ou créent de la distance.</p></article>
+            </div>
+          </div>
+          <div class="tab-panel" data-panel="techs">
+            <div class="grid-2">
+              <article class="mini"><h4>Techs</h4><p>Utilisations avancées ou malines des moves : timing, angle, enchaînement, exploitation du décor ou du déplacement.</p></article>
+              <article class="mini"><h4>Pourquoi c’est fort</h4><p>Ça permet souvent d’être plus imprévisible, plus optimal, ou juste plus stylé que le joueur moyen.</p></article>
+            </div>
+          </div>
+          <div class="tab-panel" data-panel="mindgame">
+            <div class="grid-2">
+              <article class="mini"><h4>Mindgame</h4><p>Feintes, pression, bait, rythme cassé, punition d’habitudes adverses.</p></article>
+              <article class="mini"><h4>Le vrai niveau</h4><p>Souvent, les meilleurs fights se jouent autant dans la lecture du joueur que dans la connaissance brute du moveset.</p></article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="tips">
+        <h3>Conseils si tu découvres le jeu</h3>
+        <p>Le plus simple pour rentrer dedans sans te noyer :</p>
+        <div class="grid-4">
+          <article class="card"><h4>1. Choisis un perso</h4><p>Ne change pas toutes les 5 minutes. Prends-en un et apprends sa logique.</p></article>
+          <article class="card"><h4>2. Bosse les bases</h4><p>Avant les grosses techs, maîtrise d’abord le déplacement et les timings simples.</p></article>
+          <article class="card"><h4>3. Regarde des clips</h4><p>Très utile pour comprendre le flow réel, les combos et les bons réflexes.</p></article>
+          <article class="card"><h4>4. Accepte de te faire ouvrir</h4><p>Le jeu est nerveux. Tu vas perdre. L’important, c’est de comprendre pourquoi.</p></article>
+        </div>
+      </section>
+
+      <section class="section" id="fun">
+        <h3>Pourquoi le jeu plaît autant</h3>
+        <p>Parce qu’il mélange plusieurs trucs qui marchent très bien ensemble.</p>
+        <div class="grid-3">
+          <article class="card"><h4>Fantasy anime</h4><p>Retrouver des vibes JJK dans un jeu Roblox, c’est déjà un gros hook pour beaucoup.</p></article>
+          <article class="card"><h4>Expression de skill</h4><p>Tu peux progresser, montrer ton niveau et développer ton propre style.</p></article>
+          <article class="card"><h4>Spectacle</h4><p>Les fights peuvent être très lisibles, très drôles ou très hype à regarder entre potes.</p></article>
+        </div>
+      </section>
+
+      <section class="section" id="limits">
+        <h3>À savoir aussi</h3>
+        <details open>
+          <summary>Ce que ce n’est pas</summary>
+          <div class="details-body">Ce n’est pas forcément un jeu ultra équilibré ou ultra pédagogique pour débuter. Il y a un côté baston / chaos / skill gap assez assumé.</div>
+        </details>
+        <details>
+          <summary>Ce qui peut frustrer</summary>
+          <div class="details-body">Les combos subis, les joueurs très forts, la lecture parfois dure au début, et la sensation de te faire ouvrir sans comprendre.</div>
+        </details>
+        <details>
+          <summary>Résumé net</summary>
+          <div class="details-body">Si tu aimes Jujutsu Kaisen, les jeux de combat nerveux et le côté skill + style, JJS peut être très cool. Si tu veux quelque chose de lent et très didactique, ça peut être plus rude au départ.</div>
+        </details>
+      </section>
+
+      <section class="callout">
+        <h3>Next move</h3>
+        <p>
+          Si tu veux, la suite logique c’est que je te fasse une <strong>V2 plus précise</strong> avec :
+          les persos connus, les styles de jeu, les techniques importantes et une explication plus détaillée pour un débutant complet.
+        </p>
+      </section>
+
+      <div class="footer-note">Page générée comme présentation rapide de JJS sur Roblox, dans un format lisible et fun.</div>
+    </main>
+  </div>
+
+  <script>
+    document.querySelectorAll('[data-tabs]').forEach(function(root) {
+      const buttons = root.querySelectorAll('[data-tab]');
+      const panels = root.querySelectorAll('[data-panel]');
+      buttons.forEach(function(button) {
+        button.addEventListener('click', function() {
+          const target = button.getAttribute('data-tab');
+          buttons.forEach(btn => btn.classList.toggle('active', btn === button));
+          panels.forEach(panel => panel.classList.toggle('active', panel.getAttribute('data-panel') === target));
+        });
+      });
+    });
+  </script>
+</body>
+</html>
