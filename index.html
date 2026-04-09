@@ -3,45 +3,124 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Obe Pages</title>
+  <title>ChevreGit / Obe Pages</title>
   <style>
     :root {
-      --bg: #0b1020;
-      --panel: rgba(19, 27, 52, 0.72);
-      --text: #eef2ff;
-      --muted: #aab6d3;
-      --line: rgba(255,255,255,0.10);
-      --accent: #7c9cff;
-      --accent-2: #55e6c1;
+      --bg: #09090b;
+      --panel: rgba(15,17,23,.84);
+      --line: rgba(255,255,255,.08);
+      --text: #fafafa;
+      --muted: #b8bed0;
+      --soft: #8b92a7;
+      --purple: #8b5cf6;
+      --cyan: #06b6d4;
+      --green: #22c55e;
+      --shadow: 0 28px 80px rgba(0,0,0,.38);
     }
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
-      margin: 0; font-family: Inter, system-ui, sans-serif; color: var(--text);
-      background: linear-gradient(180deg, #0a0f1d, #0f1630 55%, #0b1020);
-      min-height: 100vh;
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(139,92,246,.20), transparent 24%),
+        radial-gradient(circle at 100% 0%, rgba(6,182,212,.16), transparent 22%),
+        linear-gradient(180deg, #09090b, #0d1118 48%, #09090b);
     }
-    .wrap { width: min(980px, calc(100% - 32px)); margin: 40px auto; }
-    .hero, .card { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 28px; }
-    h1 { font-size: clamp(32px, 4vw, 52px); margin: 0 0 10px; }
-    p { color: var(--muted); }
-    .grid { display: grid; gap: 18px; margin-top: 22px; }
-    a.card { display:block; text-decoration:none; color:inherit; }
-    .label { display:inline-block; padding:8px 12px; border-radius:999px; background: rgba(124,156,255,0.12); color:#dce6ff; font-size:13px; }
+    a { color: inherit; text-decoration: none; }
+    .wrap { width: min(1280px, calc(100% - 28px)); margin: 24px auto 72px; display: grid; gap: 22px; }
+    .hero, .section, .callout {
+      background: linear-gradient(180deg, rgba(18,20,28,.88), rgba(14,16,22,.95));
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+    .hero { padding: 34px; position: relative; overflow: hidden; }
+    .hero::after { content:""; position:absolute; right:-60px; bottom:-70px; width:260px; height:260px; border-radius:999px; background: radial-gradient(circle, rgba(139,92,246,.20), transparent 68%); }
+    .eyebrow { display:inline-flex; padding:8px 12px; border-radius:999px; border:1px solid var(--line); background: rgba(255,255,255,.05); font-size:12px; letter-spacing:.14em; text-transform:uppercase; }
+    .hero h1 { margin:18px 0 12px; font-size: clamp(42px, 8vw, 96px); line-height:.92; letter-spacing:-.06em; max-width: 980px; }
+    .lead { margin:0; color: var(--muted); font-size: clamp(17px,2vw,22px); line-height:1.7; max-width: 860px; }
+    .hero-grid, .grid-3 { display:grid; gap:16px; }
+    .hero-grid { grid-template-columns: repeat(4,1fr); margin-top: 24px; }
+    .metric, .card, .page-card {
+      padding: 18px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    }
+    .metric strong { display:block; margin-bottom:6px; font-size:22px; }
+    .metric span { color:var(--soft); font-size:13px; }
+    .section { padding: 26px; }
+    .section h2 { margin:0 0 10px; font-size: 28px; letter-spacing:-.03em; }
+    .section > p { margin:0 0 18px; color: var(--muted); line-height:1.7; }
+    .grid-3 { grid-template-columns: repeat(3,minmax(0,1fr)); }
+    .page-card { display:block; transition: transform .18s ease, border-color .18s ease, background .18s ease; }
+    .page-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,.16); background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); }
+    .page-card .tag { display:inline-flex; padding:6px 10px; border-radius:999px; background: rgba(255,255,255,.05); border:1px solid var(--line); color:#eaedf7; font-size:12px; margin-bottom:14px; }
+    .page-card h3 { margin:0 0 10px; font-size:22px; }
+    .page-card p { margin:0 0 16px; color:var(--muted); line-height:1.65; }
+    .page-card .meta { color:var(--soft); font-size:13px; }
+    .callout { padding: 26px; border-color: rgba(34,197,94,.24); background: linear-gradient(180deg, rgba(34,197,94,.10), rgba(14,16,22,.95)); }
+    .callout h2 { margin:0 0 10px; font-size:28px; }
+    .callout p { margin:0; color:#dcfce7; line-height:1.7; }
+    .footer-note { color: var(--soft); font-size: 13px; padding: 0 4px; }
+    @media (max-width: 980px) { .hero-grid, .grid-3 { grid-template-columns: 1fr; } }
+    @media (max-width: 720px) { .hero, .section, .callout { padding: 20px; } .hero h1 { font-size: 44px; } .hero-grid { grid-template-columns: repeat(2,1fr); } }
   </style>
 </head>
 <body>
   <div class="wrap">
     <section class="hero">
-      <span class="label">Obe Pages</span>
-      <h1>Pages visuelles d’Obe</h1>
-      <p>Un petit repo GitHub Pages pour consulter facilement sur mobile des exports HTML, cartes de réflexion et mini dashboards.</p>
+      <span class="eyebrow">ChevreGit • Obe Pages</span>
+      <h1>Un petit hub vivant de pages pensées avec Obe.</h1>
+      <p class="lead">
+        Ici, les conversations ne restent pas juste des messages. Elles deviennent des pages lisibles, jolies, structurées et partageables.
+        C’est à la fois un terrain de jeu, un labo de forme, et le début d’une couche de mémoire visuelle pour <strong>obe-os</strong>.
+      </p>
+      <div class="hero-grid">
+        <div class="metric"><strong>Pages premium</strong><span>pensées pour mobile et lecture rapide</span></div>
+        <div class="metric"><strong>Conversation → artefact</strong><span>le cœur du skill page-maker</span></div>
+        <div class="metric"><strong>Fun + utile</strong><span>proto vivant, pas doc morte</span></div>
+        <div class="metric"><strong>Évolutif</strong><span>templates, signaux, stratégie, infra</span></div>
+      </div>
     </section>
-    <section class="grid">
-      <a class="card" href="./pages/gmail-calendar-copilot-architecture.html">
-        <h2>Architecture copilote Gmail / Calendar</h2>
-        <p>Le design recommandé : un canal de signaux séparé, mais le même cerveau Obe derrière.</p>
-      </a>
+
+    <section class="section">
+      <h2>Pages publiées</h2>
+      <p>Premier lot de pages générées pour tester le style, la structure et la logique du skill.</p>
+      <div class="grid-3">
+        <a class="page-card" href="./pages/page-maker-skill-overview.html">
+          <span class="tag">Skill</span>
+          <h3>page-maker — skill overview</h3>
+          <p>La page qui explique le skill lui-même : rôle, workflow, use cases, logique V2 premium.</p>
+          <div class="meta">conversation → page • premium V2</div>
+        </a>
+        <a class="page-card" href="./pages/obe-os-overview.html">
+          <span class="tag">System overview</span>
+          <h3>obe-os — overview</h3>
+          <p>Vue d’ensemble de la vision, l’architecture, la roadmap et le positionnement d’obe-os.</p>
+          <div class="meta">vision • architecture • roadmap</div>
+        </a>
+        <a class="page-card" href="./pages/gmail-calendar-signals.html">
+          <span class="tag">Signals</span>
+          <h3>Gmail / Calendar Signals</h3>
+          <p>Le cadrage du futur flux de signaux dédié : même cerveau Obe, canal séparé, règles anti-bruit.</p>
+          <div class="meta">bot dédié • low-noise • signal layer</div>
+        </a>
+      </div>
     </section>
+
+    <section class="callout">
+      <h2>Ce que ce hub teste vraiment</h2>
+      <p>
+        Pas juste du HTML. Ce hub teste une idée plus importante : convertir vite une pensée utile en surface visuelle propre.
+        Si ça tient, ça devient une vraie brique d’obe-os.
+      </p>
+    </section>
+
+    <div class="footer-note">Landing page d’obe-pages pour ChevreGit. Premier test plus “fun” mais déjà utile.</div>
   </div>
 </body>
 </html>
